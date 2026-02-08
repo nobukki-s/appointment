@@ -1,7 +1,7 @@
 
 
 import { SwipeDeck } from "@/components/SwipeDeck";
-import { client, CardContent } from "@/lib/microcms";
+import { getClient, CardContent } from "@/lib/microcms";
 
 export default async function Home({
   searchParams,
@@ -35,8 +35,9 @@ export default async function Home({
   }
 
   try {
+    const client = getClient();
     const data = await client.get<CardContent>({
-      endpoint: "card",
+      endpoint: "content",
       contentId: id,
     });
 
@@ -68,9 +69,12 @@ export default async function Home({
   } catch (error) {
     console.error("Failed to fetch data:", error);
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-screen items-center justify-center flex-col gap-2">
         <p className="text-lg font-medium text-red-500">
-          Failed to load content. Please check the ID.
+          Failed to load content.
+        </p>
+        <p className="text-sm text-gray-500">
+          {(error as Error).message}
         </p>
       </div>
     );
