@@ -11,6 +11,16 @@ export const SwipeDeck = ({ cards: initialCards }: { cards: { id: number; url: s
 
     const handleSwipe = (id: number, direction: "left" | "right") => {
         console.log(`Swiped ${direction} on card ${id}`);
+
+        // Check if it's the last card and swipe direction is right
+        if (cards.length === 1 && direction === "right") {
+            const currentCard = cards[0];
+            if (currentCard.actionUrl) {
+                window.location.href = currentCard.actionUrl;
+                return;
+            }
+        }
+
         setCards((prev) => prev.filter((card) => card.id !== id));
     };
 
