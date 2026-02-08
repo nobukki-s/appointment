@@ -4,15 +4,10 @@ import { useState } from "react";
 import { SwipeCard } from "./SwipeCard";
 import { AnimatePresence } from "framer-motion";
 
-const CARDS = [
-    { id: 1, url: "/1.jpg" },
-    { id: 2, url: "/2.jpg" },
-    { id: 3, url: "/3.jpg" },
-    { id: 4, url: "/4.jpg", actionUrl: "https://timerex.net/s/takei_8256_dd6a/6cb3bb22/" },
-];
 
-export const SwipeDeck = () => {
-    const [cards, setCards] = useState(CARDS);
+
+export const SwipeDeck = ({ cards: initialCards }: { cards: { id: number; url: string; actionUrl?: string }[] }) => {
+    const [cards, setCards] = useState(initialCards);
 
     const handleSwipe = (id: number, direction: "left" | "right") => {
         console.log(`Swiped ${direction} on card ${id}`);
@@ -20,7 +15,7 @@ export const SwipeDeck = () => {
     };
 
     const handleReset = () => {
-        setCards(CARDS);
+        setCards(initialCards);
     }
 
     return (
