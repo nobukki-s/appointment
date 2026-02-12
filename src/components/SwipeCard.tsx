@@ -1,79 +1,44 @@
-"use client";
-
-import { motion, useMotionValue, useTransform, PanInfo } from "framer-motion";
-import Image from "next/image";
-import { useState } from "react";
-
 interface SwipeCardProps {
     id: number;
     url: string;
-    onSwipe: (id: number, direction: "left" | "right") => void;
+    onBack?: () => void;
+    onNext?: () => void;
     index: number;
     priority?: boolean;
-    actionUrl?: string;
 }
 
-export const SwipeCard = ({ id, url, onSwipe, index, priority = false, actionUrl }: SwipeCardProps) => {
-    const x = useMotionValue(0);
-    const rotate = useTransform(x, [-200, 200], [-25, 25]);
-    const opacity = useTransform(x, [-200, -100, 0, 100, 200], [0, 1, 1, 1, 0]);
-
-    const handleDragEnd = (
-        _: any,
-        info: PanInfo
-    ) => {
-        if (info.offset.x > 100) {
-            onSwipe(id, "right");
-        } else if (info.offset.x < -100) {
-            onSwipe(id, "left");
-        }
-    };
-
+export const SwipeCard = ({ id, url, onBack, onNext, index, priority = false }: SwipeCardProps) => {
     return (
-        <motion.div
-            style={{
-                x,
-                rotate,
-                opacity,
-                zIndex: index,
-            }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            onDragEnd={handleDragEnd}
-            className="absolute cursor-grab active:cursor-grabbing bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-200"
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ x: x.get() < 0 ? -200 : 200, opacity: 0, transition: { duration: 0.2 } }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        >
-            <div className="relative">
+        <div className="flex flex-col w-full h-full bg-white">
+            <div className="flex-1 flex items-center justify-center p-4 md:p-6 overflow-hidden min-h-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                     src={url}
                     alt="Card Image"
-                    className="max-w-[90vw] max-h-[80vh] w-auto h-auto object-contain pointer-events-none block"
+                    className="max-w-full max-h-full w-auto h-auto object-contain"
                 />
-                <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 to-transparent p-6 text-white pb-24">
-                    <h3 className="text-2xl font-bold">Item {id}</h3>
-                    <p className="text-sm opacity-90">Swipe right to like!</p>
-                </div>
-                {actionUrl && (
-                    <div className="absolute bottom-6 left-0 w-full flex justify-center gap-4 px-6 z-10" onPointerDown={(e) => e.stopPropagation()}>
-                        <button
-                            onClick={() => onSwipe(id, "left")}
-                            className="flex-1 bg-red-500 text-white font-bold py-3 rounded-full hover:bg-red-600 transition shadow-lg"
-                        >
-                            いいえ
-                        </button>
-                        <a
-                            href={actionUrl}
-                            className="flex-1 bg-green-500 text-white font-bold py-3 rounded-full hover:bg-green-600 transition shadow-lg text-center"
-                        >
-                            はい
-                        </a>
-                    </div>
-                )}
             </div>
-        </motion.div>
+
+            <div className="flex-none p-6 w-full">
+                <div className="flex flex-col gap-3 w-full">
+                    <button
+                        onClick={onNext}
+                        className="w-full px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-lg"
+                    >
+                        進む →
+                    </button>
+                    <button
+                        onClick={onBack}
+                        disabled={!onBack}
+                        className={`w-full px-4 py-3 rounded-lg font-medium border ${!onBack
+                            ? 'bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed'
+                            : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-100'
+                            }`}
+                    >
+                        ← 戻る
+                    </button>
+                </div>
+            </div>
+        </div>
     );
 };

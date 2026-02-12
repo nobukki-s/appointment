@@ -63,7 +63,7 @@ export default async function Home({
 
     return (
       <main>
-        <SwipeDeck cards={cards} />
+        <SwipeDeck cards={cards} title={data.title} />
       </main>
     );
   } catch (error) {
